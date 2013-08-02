@@ -10,3 +10,5 @@ The secret should be in JSON format and encrypted with AES-256-CBC (with PKCS#7 
 
 See examples/generate-cookie.py for an example as to how such a cookie can be generated.
 
+This code is available under the Apache 2.0 License.
+
