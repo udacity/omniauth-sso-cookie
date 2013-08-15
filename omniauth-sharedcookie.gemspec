@@ -3,7 +3,7 @@ require File.expand_path('../lib/omniauth-sharedcookie/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.add_dependency 'omniauth', '~> 1.1.0'
-  gem.add_dependency 'json', '~> 1.8.0'
+  gem.add_dependency 'json', '>= 1.6.0'
 
   gem.authors       = ["Attila-Mihály Balázs"]
   gem.email         = ["dify.ltd@gmail.com"]
