@@ -19,4 +19,4 @@ def create_cookie(datadict):
     sig = hmac.new(HMAC_KEY, data, hashlib.sha256).digest()
     return (data + sig).encode('base64').replace("\n", "")
 
-print create_cookie({'name': 'John Smith', 'email': 'jsmith@example.com'})
+print create_cookie({'uid': '123456', 'nickname': 'FooBar', 'expires': 1893456000})
