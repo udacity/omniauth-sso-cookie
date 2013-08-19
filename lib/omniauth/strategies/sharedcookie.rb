@@ -16,7 +16,13 @@ module OmniAuth
 
       def request_phase
         auth_cookie = request.cookies[options.cookie_name]
-        if auth_cookie.nil? || decrypt_cookie(auth_cookie).nil?
+        begin
+          auth_cookie = decrypt_cookie(auth_cookie) unless auth_cookie.nil?
+        rescue
+          self.log(:warn, "Error decoding '#{auth_cookie}'")
+          auth_cookie = nil
+        end
+        if auth_cookie.nil?
           redirect options.login_url
         else
           redirect callback_url
