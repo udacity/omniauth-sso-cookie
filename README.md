@@ -1,9 +1,9 @@
-omniauth-sharedcookie
+omniauth-sso-cookie
 =====================
 
-[![Build Status](https://travis-ci.org/cdman/omniauth-sharedcookie.png?branch=master)](https://travis-ci.org/cdman/omniauth-sharedcookie)
-[![Code Climate](https://codeclimate.com/github/cdman/omniauth-sharedcookie.png)](https://codeclimate.com/github/cdman/omniauth-sharedcookie)
-[![Dependency Status](https://gemnasium.com/cdman/omniauth-sharedcookie.png)](https://gemnasium.com/cdman/omniauth-sharedcookie)
+[![Build Status](https://travis-ci.org/cdman/omniauth-sso-cookie.png?branch=master)](https://travis-ci.org/cdman/omniauth-sso-cookie)
+[![Code Climate](https://codeclimate.com/github/cdman/omniauth-sso-cookie.png)](https://codeclimate.com/github/cdman/omniauth-sso-cookie)
+[![Dependency Status](https://gemnasium.com/cdman/omniauth-sso-cookie.png)](https://gemnasium.com/cdman/omniauth-sso-cookie)
 
 Ruby Omniauth strategy for authenticating using a cookie encrypted with a shared secret.
 

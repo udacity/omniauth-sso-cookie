@@ -5,7 +5,7 @@ require 'json'
 
 module OmniAuth
   module Strategies
-    class SharedCookie
+    class SsoCookie
       include OmniAuth::Strategy
 
       option :uid_field, :email

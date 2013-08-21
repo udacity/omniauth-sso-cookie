@@ -4,7 +4,7 @@ require 'bundler'
 Bundler.setup :default, :development, :example
 require 'sinatra'
 require 'omniauth'
-require 'omniauth-sharedcookie'
+require 'omniauth-sso-cookie'
 require 'base64'
 require 'openssl'
 require 'json'
@@ -15,7 +15,7 @@ HMAC_KEY       = '53HGbrQJLq5iXIhPhU9JM2259WfgqCr6'
 use Rack::Session::Cookie
 
 use OmniAuth::Builder do
-  provider :sharedcookie,
+  provider :ssocookie,
     :login_url => '/login', :cookie_name => 'auth_cookie',
     :uid_field => 'uid', :encryption_key => ENCRYPTION_KEY,
     :hmac_key => HMAC_KEY
@@ -24,7 +24,7 @@ end
 get '/' do
   <<-HTML
   <ul>
-    <li><a href='/auth/sharedcookie'>Sign in using an encrypted shared cookie</a></li>
+    <li><a href='/auth/ssocookie'>Sign in using an encrypted shared cookie</a></li>
   </ul>
   HTML
 end
@@ -47,7 +47,7 @@ get '/login' do
 
   response.set_cookie('auth_cookie', :value => Base64.strict_encode64(encrypted).encode('utf-8'))
   <<-HTML
-    <p>Done. Go to the <a href='/auth/sharedcookie/callback'>callback</a></p>
+    <p>Done. Go to the <a href='/auth/ssocookie/callback'>callback</a></p>
   HTML
 end
 
@@ -55,3 +55,4 @@ get '/auth/:provider/callback' do
   content_type 'text/plain'
   request.env['omniauth.auth'].info.to_hash.inspect
 end
+
