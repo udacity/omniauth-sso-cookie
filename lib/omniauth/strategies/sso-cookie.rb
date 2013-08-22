@@ -42,17 +42,23 @@ module OmniAuth
 
       def decrypt_cookie(cookie)
         data = Base64.strict_decode64(cookie)
-        data, hmac = data[0..-33], data[-32..-1]
+        prefix, data, hmac = data[0..2], data[3..-33], data[-32..-1]
         target_hmac  = OpenSSL::HMAC.digest('sha256', options.hmac_key, data)
         if !constant_time_comparison(hmac, target_hmac)
-          fail('Authentication error!')
+          fail("Authentication error!")
         end
-        iv, data = data[0..15], data[16..-1]
-        cipher = OpenSSL::Cipher.new('aes-256-cbc')
-        cipher.decrypt
-        cipher.key = options.encryption_key
-        cipher.iv = iv
-        decrypted = cipher.update(data) << cipher.final()
+        if prefix == '$2$'
+          iv, data = data[0..15], data[16..-1]
+          cipher = OpenSSL::Cipher.new('aes-256-cbc')
+          cipher.decrypt
+          cipher.key = options.encryption_key
+          cipher.iv = iv
+          decrypted = cipher.update(data) << cipher.final()
+        elsif prefix == '$1$'
+          decrypted = data
+        else
+          fail("Unhandled prefix! (#{prefix})")
+        end
         result = JSON.parse(decrypted)
         result['expires'].to_i <= Time.now.to_i ? nil : result
       end

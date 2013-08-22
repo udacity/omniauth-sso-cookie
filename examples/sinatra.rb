@@ -9,6 +9,7 @@ require 'base64'
 require 'openssl'
 require 'json'
 
+ENCRYPT        = true
 ENCRYPTION_KEY = 'LXWRMxv84CsXvZVWm2gQ3AKcZf7e7rpR'
 HMAC_KEY       = '53HGbrQJLq5iXIhPhU9JM2259WfgqCr6'
 
@@ -37,15 +38,20 @@ get '/login' do
     expires: (Time.now + 10*24*60*60*10).to_i,
   }
 
-  cipher = OpenSSL::Cipher.new('aes-256-cbc')
-  cipher.encrypt
-  cipher.key = ENCRYPTION_KEY
-  iv = cipher.random_iv
-  encrypted = cipher.update(JSON.generate(data)) << cipher.final()
-  encrypted = iv + encrypted
-  encrypted = encrypted + OpenSSL::HMAC.digest('sha256', HMAC_KEY, encrypted)
+  if ENCRYPT
+    cipher = OpenSSL::Cipher.new('aes-256-cbc')
+    cipher.encrypt
+    cipher.key = ENCRYPTION_KEY
+    iv = cipher.random_iv
+    encrypted = cipher.update(JSON.generate(data)) << cipher.final()
+    encrypted = iv + encrypted
+    data = '$2$' + encrypted + OpenSSL::HMAC.digest('sha256', HMAC_KEY, encrypted)
+  else
+    data = JSON.generate(data)
+    data = '$1$' + data + OpenSSL::HMAC.digest('sha256', HMAC_KEY, data)
+  end
 
-  response.set_cookie('auth_cookie', :value => Base64.strict_encode64(encrypted).encode('utf-8'))
+  response.set_cookie('auth_cookie', :value => Base64.strict_encode64(data).encode('utf-8'))
   <<-HTML
     <p>Done. Go to the <a href='/auth/ssocookie/callback'>callback</a></p>
   HTML

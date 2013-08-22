@@ -12,15 +12,17 @@ ENCRYPTION_KEY = 'LXWRMxv84CsXvZVWm2gQ3AKcZf7e7rpR'
 HMAC_KEY       = '53HGbrQJLq5iXIhPhU9JM2259WfgqCr6'
 
 
-def create_cookie(datadict):
+def create_cookie(datadict, encrypt=True):
     values = json.dumps(datadict, separators=(',',':'))
-    pad_value = Cipher.AES.block_size - len(values) % Cipher.AES.block_size;
-    values = values + pad_value * chr(pad_value)
-    iv = Random.new().read(Cipher.AES.block_size)
-    cipher = Cipher.AES.new(ENCRYPTION_KEY, Cipher.AES.MODE_CBC, iv)
-    data = iv + cipher.encrypt(values)
-    sig = hmac.new(HMAC_KEY, data, hashlib.sha256).digest()
-    return (data + sig).encode('base64').replace('\n', '')
+    if encrypt:
+        pad_value = Cipher.AES.block_size - len(values) % Cipher.AES.block_size;
+        values = values + pad_value * chr(pad_value)
+        iv = Random.new().read(Cipher.AES.block_size)
+        cipher = Cipher.AES.new(ENCRYPTION_KEY, Cipher.AES.MODE_CBC, iv)
+        values = iv + cipher.encrypt(values)
+    sig = hmac.new(HMAC_KEY, values, hashlib.sha256).digest()
+    prefix = '$2$' if encrypt else '$1$'
+    return (prefix + values + sig).encode('base64').replace('\n', '')
 
 
 print create_cookie({
